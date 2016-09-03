@@ -1,0 +1,33 @@
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<link rel=stylesheet type="text/css" href="../css/main.css">
+	<title>B04902023的筆記 從無到有全攻略</title>
+</head>
+<body>
+<div id="myset">
+	<div class="content">
+	<a href="../index.html">[Index(返回首頁)]</a>
+	<h1>PHP</h1>
+	<h2>基本了解</h2>
+	<h3>PHP是啥，能吃嗎？</h3>
+	PHP就是一種直譯式語言，它是在伺服器端執行的。當客戶端向伺服器要求filename.php的時候﹙也可能會送一些信息，例如表單資料﹚，伺服器不會直接回傳它的內容，而是先執行程式碼再回傳執行後的結果，然後這個結果在客戶端會被當成一般html解讀。所以，當你在客戶端查看php的原始碼，你看到其實是執行過後的結果，而不是原始的php檔案。<br>
+	PHP是直譯式的，表示它不需經過編譯的過程，相容性可能較高，當然執行時會慢一點。但它直譯如果出現syntax error還是會全掛。
+	<h2>安裝+開發</h2>
+	
+	<h2>語法及應用</h2>
+	PHP語言中，被&#060&#063及&#063&#062包圍住的程式碼，就是PHP語法，會執行一堆程式，沒被包圍住的就是當HTML格式，直接印出來。<br>
+	於是，你就可以利用php去產生一個變動的html檔案，例如變動長度的變數宣告。<br>
+	要debug可以在shell裡面，輸入php filename.php之類的(檔名自行更換)，可以看到有那些行掛掉，常常是句末沒加分號XDD<br>
+	如何用指令列執行php可參考<a href="http://www.tecmint.com/run-php-codes-from-linux-commandline/">http://www.tecmint.com/run-php-codes-from-linux-commandline/</a><br>
+	傳變數請參考<a href="http://stackoverflow.com/questions/5655284/how-to-pass-parameters-from-command-line-to-post-in-php-script">http://stackoverflow.com/questions/5655284/how-to-pass-parameters-from-command-line-to-post-in-php-script</a><br>
+	PHP字串連接符號是一個英文句點，這個語法跟PERL一樣，例如：<br>
+	<code>
+	$fullname = $username.'@'.$hostname;
+	</code>
+
+	<p>Last Update: 2016/9/3</p>
+	</div>
+</div>
+</body>
+</html>

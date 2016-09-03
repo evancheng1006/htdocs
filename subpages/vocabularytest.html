@@ -1,0 +1,226 @@
+<!-- 
+http://stackoverflow.com/questions/13709482/how-to-read-text-file-in-javascript
+http://stackoverflow.com/questions/196498/how-do-i-load-the-contents-of-a-text-file-into-a-javascript-variable
+http://stackoverflow.com/questions/4533018/how-to-read-a-text-file-from-server-using-javascript
+-->
+
+<html>
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<title>Vocabulary test</title>
+
+<script LANGUAGE="JavaScript">
+
+var thisQuestionAnswerSubmitted;
+
+var thisQuestion;
+var thisQuestionOptions;
+var thisQuestionAnswer;
+
+var dictionary;
+
+function init() {
+	loadDictionary();
+	restoreScore();
+	newQuestion();
+}
+
+function resetButtonOnPress() {
+	restoreScore();
+	newQuestion();
+}
+
+function restoreScore() {
+	document.form.score.value = 0;
+	document.form.nQuestion.value = 0;
+}
+
+function generateNonDuplicateRandomNumber(__randomNumberLowerBound, __randomNumberUpperBound, __nRandomNumbers) {
+	//generate non-duplicate random numbers from a given interval
+
+	var __returnedValue;
+	var __unusedNumber;
+	
+	__returnedValue = [];
+	__unusedNumber = [];
+	for (i = __randomNumberLowerBound; parseInt(i) <= parseInt(__randomNumberUpperBound); i++) {
+		__unusedNumber.push(i);
+	}
+
+	while ((__returnedValue.length < __nRandomNumbers) && (__unusedNumber.length > 0)) {
+		var __selectedIndex = Math.floor(Math.random() * __unusedNumber.length);
+		__returnedValue.push(__unusedNumber[__selectedIndex]);
+		__unusedNumber.splice(__selectedIndex, 1);
+	}
+
+	return __returnedValue;
+
+}
+
+function newQuestion() {
+	document.form.nQuestion.value = parseInt(document.form.nQuestion.value) + 1;
+	// generate question from the dictionary
+	// randomly select words
+	var randomOption = generateNonDuplicateRandomNumber(0, dictionary.length - 1, 4);
+	// randomly select an answer
+	var randomlySelectedAnswer = Math.floor(Math.random() * 4);
+	var randomlySelectedAnswerIndex = randomOption[randomlySelectedAnswer];
+
+
+	// randomly select one meaning of the word and save the options
+	var ithMeaningOfTheWord = [0, 0, 0, 0];
+	
+	thisQuestionOptions = [];
+	for (i = 0; i <= 3; i++) {
+		ithMeaningOfTheWord[i] = Math.floor(Math.random() * dictionary[randomOption[i]].meaning.length);
+		thisQuestionOptions.push(dictionary[randomOption[i]].meaning[ithMeaningOfTheWord[i]]);
+	}
+	thisQuestion = dictionary[randomlySelectedAnswerIndex].word;
+	thisQuestionAnswer = dictionary[randomlySelectedAnswerIndex].meaning[ithMeaningOfTheWord[randomlySelectedAnswer]];
+
+	// control functions
+	thisQuestionAnswerSubmitted = false;
+	document.form.question.value = thisQuestion;
+	document.form.optionA.value = thisQuestionOptions[0];
+	document.form.optionB.value = thisQuestionOptions[1];
+	document.form.optionC.value = thisQuestionOptions[2];
+	document.form.optionD.value = thisQuestionOptions[3];
+	document.form.messageBox.value = 'Select your answer';
+}
+
+function check() {
+	var inputtedOption = -1;
+	var result;
+	for (var i = 0; i < 4; i++) {
+		if (document.form.ans[i].checked) {
+			inputtedOption = document.form.ans[i].value;
+		}
+	}
+	if (inputtedOption >= 0) {
+		inputtedAns = thisQuestionOptions[inputtedOption];
+	}
+	
+	if (inputtedAns == thisQuestionAnswer) {
+		result = 'Correct!';
+		if (!thisQuestionAnswerSubmitted) {
+			document.form.score.value = parseInt(document.form.score.value) + 1;
+			thisQuestionAnswerSubmitted = true;
+		}
+	} else {
+		result = 'Wrong! The answer is \"' + thisQuestionAnswer + '\".';
+		thisQuestionAnswerSubmitted = true;
+	}
+
+	document.form.messageBox.value = result;
+}
+
+</script>
+</head>
+
+<body BGCOLOR="#F2F5A9" onload="init();">
+
+<h2 align="left">Vocabulary test</h2>
+<input TYPE="button" VALUE="reset" onClick="resetButtonOnPress();">
+<form NAME="form">
+	<table BORDER="1">
+		<tr>
+			<td>Dictionary Size:</td>
+			<td><output TYPE="text" NAME="dictionarySize" SIZE="44" VALUE></td>
+		</tr>
+		<tr>
+			<td>Score:</td>
+			<td><output TYPE="text" NAME="score" SIZE="44" VALUE></td>
+		</tr>
+		<tr>
+			<td>Question:</td>
+			<td><output TYPE="text" NAME="nQuestion" SIZE="44" VALUE></td>
+		</tr>
+		<tr>
+			<td colspan="2"><output TYPE="text" NAME="question" SIZE="44" VALUE></td>
+		</tr>
+		<tr>
+			<td><input TYPE="radio" NAME="ans" VALUE=0 CHECKED onClick></td>
+			<td><output TYPE="text" NAME="optionA" SIZE="44" VALUE></td>
+		</tr>
+		<tr>
+			<td><input TYPE="radio" NAME="ans" VALUE=1 onClick></td>
+			<td><output TYPE="text" NAME="optionB" SIZE="44" VALUE></td>
+		</tr>
+		<tr>
+			<td><input TYPE="radio" NAME="ans" VALUE=2 onClick></td>
+			<td><output TYPE="text" NAME="optionC" SIZE="44" VALUE></td>
+		</tr>
+		<tr>
+			<td><input TYPE="radio" NAME="ans" VALUE=3 onClick></td>
+			<td><output TYPE="text" NAME="optionD" SIZE="44" VALUE></td>
+		</tr>
+		<tr>
+			<td colspan="2"><input TYPE="button" VALUE="check" onClick="check();">
+			<input TYPE="button" VALUE="new question" onClick="newQuestion();"></td>
+		</tr>
+		<tr>
+			<td colspan="2"><output TYPE="text" NAME="messageBox" SIZE="44" VALUE></td>
+		</tr>
+	</table>
+</form>
+</body>
+
+<script LANGUAGE="JavaScript">
+// the dictionary is here
+function loadDictionary() {
+	dictionary = [];
+	loadDictionaryGroup1();
+	loadDictionaryGroupCustom();
+	loadLearn20160719();
+	loadLearn20160721();
+	document.form.dictionarySize.value = dictionary.length;
+}
+function loadDictionaryGroupCustom() {
+	dictionary.push({ word: 'diffedent', meaning: ['hesitant in acting, shy']});
+	dictionary.push({ word: 'audible', meaning: ['can be heard']});
+	dictionary.push({ word: 'courier', meaning: ['a messenger']});
+	dictionary.push({ word: 'thermometer', meaning: ['a device for measuring heat']});
+	dictionary.push({ word: 'auspicious', meaning: ['favorable']});
+	dictionary.push({ word: 'chronic', meaning: ['marked by a long period of time, recurrence']});
+	dictionary.push({ word: 'interrupt', meaning: ['to stop, to break in (usually with questions)']});
+	dictionary.push({ word: 'sentimental', meaning: ['marked by feeling or emotion']});
+	dictionary.push({ word: 'missive', meaning: ['a letter to be sent']});
+	dictionary.push({ word: 'espionage', meaning: ['using spies or observers']});
+	dictionary.push({ word: 'fluctuate', meaning: ['to shift back and forth']});
+	dictionary.push({ word: 'jettison', meaning: ['to throw away, to cast off']});
+	dictionary.push({ word: 'animosity', meaning: ['hostility, ill will']});
+	dictionary.push({ word: 'verve', meaning: ['enthusiasm']});
+	dictionary.push({ word: 'perennial', meaning: ['enduring, persisting for several years']});
+	dictionary.push({ word: 'recede', meaning: ['to move back, to withdraw']});
+	dictionary.push({ word: 'ponder', meaning: ['to think about, to weigh in one\'s mind']});
+}
+function loadDictionaryGroup1() {
+	dictionary.push({ word: 'evident', meaning: ['clearly revealed to the mind or the senses or judgment', 'capable of being seen or noticed']});
+	dictionary.push({ word: 'forthcoming', meaning: ['of the relatively near future', 'available when required or as promised', 'federal funds were not forthcoming']});
+	dictionary.push({ word: 'incline', meaning: ['have a tendency or disposition to do or be something', 'lower or bend (the head or upper body), as in a nod or bow', 'feel favorably disposed or willing', 'an elevated geological formation']});
+	dictionary.push({ word: 'levy', meaning: ['impose and collect', 'cause to assemble or enlist in the military']});
+	dictionary.push({ word: 'notwithstanding', meaning: ['despite anything to the contrary (usually following a concession)']});
+	dictionary.push({ word: 'nonetheless', meaning: ['despite anything to the contrary (usually following a concession)']});
+	dictionary.push({ word: 'reluctance', meaning: ['(physics) opposition to magnetic flux (analogous to electric resistance)', 'a certain degree of unwillingness']});
+}
+
+function loadLearn20160719() {
+// https://www.youtube.com/watch?v=5NZY9YmdHsQ Undercover Boss Frontier Airlines
+	dictionary.push({ word: 'pose', meaning: ['pretend to be someone you are not', 'behave affectedly in order to impress others']});
+	dictionary.push({ word: 'layoff', meaning: ['the act of laying off an employee or a work force']});
+	dictionary.push({ word: 'refugee', meaning: ['an exile who flees for safety']});
+	dictionary.push({ word: 'testimony', meaning: ['a solemn statement made under oath', 'an assertion offering firsthand authentication of a fact; "according to his own testimony he can\'t do it"', 'something that serves as evidence; "his effort was testimony to his bevotion']});
+	dictionary.push({ word: 'marginalize(marginalise)', meaning: ['relegate to a lower or outer edge, as of specific groups of people; "We must not marginalize the poor in our society"']});
+}
+function loadLearn20160721() {
+// https://www.youtube.com/watch?v=5NZY9YmdHsQ Undercover Boss Frontier Airlines
+	dictionary.push({ word: 'endorse', meaning: ['to make a public statement of your approval or support for something or someone', 'to appear in an advertisement, saying that you use and like a particular product']});
+	dictionary.push({ word: 'cynical', meaning: ['contemptuously distrustful of human nature and motives', 'based on or reflecting a belief that human conduct is motivated primarily by self-interest']});
+	dictionary.push({ word: 'prosecutor', meaning: ['a person who institutes a prosecution before a court']});
+	dictionary.push({ word: 'tactile', meaning: ['of or relating to the sense of touch']});
+}
+
+</script>
+
+</html>

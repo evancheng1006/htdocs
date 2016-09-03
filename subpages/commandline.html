@@ -12,8 +12,26 @@
     <h2>Windows</h2>
 	<h2>Linux</h2>
         <h3>Note</h3>
-	vim 不小心按到別的鍵以後再按I，是不會進入編輯模式的。解決辦法：按住Backspace，清除先前打過的文字，再按I。<br>
-	Linux的命令列打密碼的時候不會顯示，甚至連幾個字元都不會顯示。所以看到打字沒反應不要擔心，它其實真的有打進去。如果打錯，狂按backspace就好了，這樣就可以重打。<br>
+	1. vim 不小心按到別的鍵以後再按I，是不會進入編輯模式的。解決辦法：按住Backspace，清除先前打過的文字，再按I。<br>
+	2. Linux的命令列打密碼的時候不會顯示，甚至連幾個字元都不會顯示。所以看到打字沒反應不要擔心，它其實真的有打進去。如果打錯，狂按backspace就好了，這樣就可以重打。<br>
+	3. http://superuser.com/questions/187900/what-is-the-difference-between-a-directory-and-a-folder/187903<br>
+	4. <a href="http://tldp.org/LDP/abs/html/dosbatch.html">Convert Dos Batch Files to Shell Scripts</a><br>
+	5. 字串連接，就直接來，例如：<br>
+	<code>
+	$wtf = 'OAO''good'"$hostname"
+	</code><br>
+	6. 注意，單引號(single quotes)跟雙引號(double quotes)的意義不一樣，參見<a href="http://stackoverflow.com/questions/6697753/difference-between-single-and-double-quotes-in-bash">http://stackoverflow.com/questions/6697753/difference-between-single-and-double-quotes-in-bash</a><br>
+	<code>
+	3.1.2.2 Single Quotes
+
+Enclosing characters in single quotes (‘'’) preserves the literal value of each character within the quotes. A single quote may not occur between single quotes, even when preceded by a backslash.
+
+3.1.2.3 Double Quotes
+
+Enclosing characters in double quotes (‘"’) preserves the literal value of all characters within the quotes, with the exception of ‘$’, ‘`’, ‘\’, and, when history expansion is enabled, ‘!’. The characters ‘$’ and ‘`’ retain their special meaning within double quotes (see Shell Expansions). The backslash retains its special meaning only when followed by one of the following characters: ‘$’, ‘`’, ‘"’, ‘\’, or newline. Within double quotes, backslashes that are followed by one of these characters are removed. Backslashes preceding characters without a special meaning are left unmodified. A double quote may be quoted within double quotes by preceding it with a backslash. If enabled, history expansion will be performed unless an ‘!’ appearing in double quotes is escaped using a backslash. The backslash preceding the ‘!’ is not removed.
+
+The special parameters ‘*’ and ‘@’ have special meaning when in double quotes (see Shell Parameter Expansion).
+    </code><br>
 	<h2 name="head_links">Links</h2>
 	<p>Last Update: 2016/1/19</p>
 	</div>
