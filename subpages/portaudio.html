@@ -1,0 +1,105 @@
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<link rel=stylesheet type="text/css" href="../css/main.css">
+	<title>B04902023的筆記 從無到有全攻略</title>
+</head>
+<body>
+<div id="myset">
+	<div class="content">
+	<a href="../index.html">[Index(返回首頁)]</a>
+	<h1>portaudio:跨平台的音訊輸出入函式庫</h1>
+	<h2>幹麻要用portaudio</h2>
+	阿就跨平台阿，不然你還想要寫winAPI喔…寫到要死結果到linux上不能用。而且它是開源的，基本上可以安心使用。<br>
+	可參考<a href="http://www.portaudio.com/">官網</a>&nbsp<a href="http://portaudio.com/docs/v19-doxydocs/tutorial_start.html">官網上的教學</a>
+	<h2>portaudio的安裝</h2>
+	<a href="http://www.portaudio.com/archives/pa_stable_v19_20140130.tgz">載點</a>&nbsp<a href="../executables/pa_stable_v19_20140130.tgz">備份</a>用windows系統還要載<a href="../executables/libportaudio-2.dll">libportaudio-2.dll</a><br>
+	解壓縮後會有portaudio資料夾<br>
+	好像不用安裝，但如果你要先編譯的話方法一樣就是打這兩行<br><code>./configure</code><br><code>make</code><br>
+	無論是linux下的.so檔和windows下的.dll檔，是跟機器相關的，最好是在那一台要執行的機器上編譯(不然叫做交叉編譯)。不過，如果先編譯好其實也無妨。<br>
+
+	<h3>windows</h3>
+	在cygwin裡面打./configure make會找不到檔案==算了，不管。就不安裝了。反正到時候只會用到libportaudio-2.dll跟整個portaudio資料夾還有portaudio/include/portaudio.h複製一份，把它們複製到你程式可見的地方，例如同一個目錄下，然後再用"-L"跟"-I"指令引入函式庫。(也就是說，不用安裝…只要複製就好了)<br>
+	<h3>linux</h3>
+	在linux下要裝ALSA或JACK，(事實上，不裝的話也可以編譯，不過需要libportaudio.so.2.0.0(編譯後產生))。<br>
+	可以打<br>
+	<code>sudo apt-get install libasound-dev</code><br>
+	安裝<br>
+	也可以直接下載portaudio，在portaudio目錄下打<br>
+	<code>./configure</code><br>
+	<code>make</code><br>
+	接著你會在portaudio/lib/.libs/ 下找到libportaudio.so.2.0.0。注意，.libs是隱藏資料夾。這樣就安裝好了<br>
+	<h3>raspberry pi(raspbian, arm-linux)</h3>
+	安裝方法跟linux一樣，不過好像編譯時不用portaudio.h(?
+	<h2>在程式裡使用portaudio(編譯)</h2>
+	"gcc"也可以換成其他編譯器，如g++。你可以試試看自己寫makefile，這樣檔名、編譯器什麼的都很好代換。如果檔案放在不同地方請自己改路徑。<br>
+	<h3>windows</h3>
+	<code>gcc main.c libportaudio-2.dll</code><br>
+	<h3>linux</h3>
+	有好幾種：<br>
+	請注意：有些範例檔(ex" portaudio/examples/paex_sinc.c)還需要math.h之類的，所以編譯時要加-lm選項(不一定要加是因為有些編譯器預設早就加了)<br>
+	看裝置有時候要加-lpthread，有時候不用，真的蠻神奇的==<br>
+	<code>gcc main.c portaudio/lib/.libs/libportaudio.a -lpthread </code>(有時可編譯，但會放不出聲音) <br>
+	<code>gcc main.c portaudio/lib/.libs/libportaudio.so.2.0.0 </code>(debian, ubuntu都可正常運作)<br>
+	(好像libportaudio.so也可以-_-)
+	<h3>raspberry pi(raspbian, arm-linux)</h3>
+	編譯方法跟linux一樣
+	<h2>運行程式</h2>
+	<h3>windows</h3>
+	直接執行即可，但執行檔需和libportaudio-2.dll在同一個目錄下<br>
+	<h3>linux</h3>
+	不可直接執行，會出現<br>
+	<code>ALSA lib pcm.c:7843:(snd_pcm_recover) underrun occurred</code><br>
+	而且聲音很奇怪。必須要打<br>
+	<code>env PULSE_LATENCY_MSEC=30 ./a.out</code><br>
+	(不一定要30，其他數字也可，執行檔名自己知道要替換…)<br>
+	執行檔不用和libportaudio.so.2.0.0在同一個目錄下
+	<h3>raspberry pi(raspbian, arm-linux)</h3>
+	不用打env PULSE_LATEN_MSEC=30，直接執行./a.out即可。<br>
+	然而，需注意音效輸出裝置設定。更改方式可參考<a href="http://computers.tutsplus.com/articles/using-a-usb-audio-device-with-a-raspberry-pi--mac-55876">using a usb audio device with a raspberry pi</a>可以從使用預設的輸出改成，使用USB音效卡。<br>
+	假設要用usb音效卡，方法就是<code>sudo nano /etc/modprobe.d/alsa-base.conf</code>(也不一定要用nano，其它文字編輯器也可以，像是vim，不過需注意此檔案只有root有權限)，把<code>options snd-usb-audio index=-2</code>這行註解掉(在行首輸入井字號<code>#</code>，變成<code># options snd-usb-audio index=-2</code>)。改完以後重開機。<br>
+	其實以上操作只是改音效卡順序，如果要設定預設是哪一個的話，要從~/.asoundrc或/.asound.conf改。<br>
+	以下是原檔案的內容，假設想要換成card 1，那麼就把以下的0都換成1。<a href="http://www.alsa-project.org/main/index.php/Asoundrc">Asoundrc</a><a href="http://blog.csdn.net/kickxxx/article/details/8290294">ALSA asoundrc官方文档</a><br>
+<code>
+pcm.!default {  <br>
+    type hw  <br>
+    card 0  <br>
+} <br> 
+<br>
+ctl.!default {  <br>
+    type hw  <br>
+    card 0  <br>
+}  <br>
+</code>
+	對了, mplayer可以指定輸出裝置，方法是，<code>mplayer -ao alsa:device=hw=1.0 test.wav</code>(此為1號音效卡第0號裝置)，(不確定幾號裝置可以只打<code>mplayer -ao alsa:device=hw=1 test.wav</code>)<br>
+	想知道第幾個音效卡是什麼裝置，可以在alsamixer裡按F6，也可以打<code>aplay -l</code>。<br>
+	arecord可以錄音，它可以指定輸入裝置，方法是，<code>arecord -D plughw:0,1 -f cd test.wav</code><br>
+	注意吼，raspberry pi的輸出裝置最好就是在開機前就連接好，像是螢幕，音效卡，不然它就不輸出，不過有時候也不必，那如果是鍵盤、滑鼠就沒差。<br>
+	那麼，要怎麼測試音效卡會不會輸出聲音呢？可以安裝mpg321套件，打<code>sudo apt-get install mpg321</code>，不過我比較推薦的是mplayer套件，打<code>sudo apt-get install mplayer</code>，它跟alsa相容。(要先安裝alsa，打<code>sudo apt-get install libasound-dev</code>裝libasound-dev這個套件就行)。然後你可以打mplayer example.mp3之類來測試。<br>
+	我用的音效卡在用內建程式aplay, omxplayer時都放不出聲音，這就是為什麼我花很多時間找套件==。對了，這個用耳機會太大聲，所以最好事先調好音量(先調最小，甚至0，以免耳機或耳朵爆掉)。測試檔案系統裡就有，如果不行，再去找其它測試檔。
+	有些音效卡只支援特定的採樣率，因此portaudio用別的採樣率時會無法播放，(Error: Invalid sample rate)，像我的音效卡只支援48000Hz，其它好像都不行==，最大最小都是48000Hz，你可以參考<a href="http://www.voxforge.org/home/docs/faq/faq/linux-how-to-determine-your-audio-cards-or-usb-mics-maximum-sampling-rate">linux how to determine your audio cards or usb mics maximum sampling rate</a>去找採樣率，也可以直接改使用portaudio程式原始碼去改採樣率。例如，portaudio範例的paex_sine.c裡頭，就把<br>
+<code>#define SAMPLE_RATE (44100)</code><br>
+改成<br>
+<code>#define SAMPLE_RATE (48000)</code><br>
+或我比較喜歡<br>
+<code>
+#ifndef <br>
+#define SAMPLE_RATE (44100)<br>
+#endif <br>
+</code>
+之類的，這樣子就可以打編譯器指令(也就是像<code>-DSAMPLE_RATE=48000</code>的東西，整個編譯指令就是<code>gcc paex_sine.c -DSAMPLE_RATE=48000 libportaudio.so.2.0.0</code>)，但也不一定要打(那就會變成程式碼中寫的採樣率)。對了，這個改採樣率是跟音訊輸出裝置有關而跟作業系統無關，所以不只是raspberry pi，windows、linux電腦如果是使用usb音效卡輸出的話，一樣要使用適合的採樣率才行。<br>
+以下這個程式(在raspberry pi 2 model b+ raspbian運行)可以播放音效，附上參考音檔，及原始碼。<a href="portaudio_html_files/playsound2.zip">下載</a><br>
+然後，paex_record.c範例程式是預設2 channels，有些音效卡不支援，會出現-9998錯誤，因此要把<br>
+<code>
+inputParameters.channelCount = 2;                    /* stereo input */ <br>
+</code>
+這行的2改成1，就ok，不過聲音可能怪怪。<br>
+
+	<h2 name="head_links">Links</h2>
+	<p>Created at 2015/11/17 night.</p>
+	<p>Last Update: 2016/2/12</p>
+	</div>
+</div>
+</body>
+</html>
+<!-- -->

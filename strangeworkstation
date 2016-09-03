@@ -1,0 +1,28 @@
+  ls
+    2  ls tmp2
+    3  cd tmp2/b01902066
+    4  ls
+    5  cd ..
+    6  cd ..
+    7  cd ~
+    8  cd home/student/
+    9  ls
+   10  cd 00
+   11  ls
+   12  cd ..
+   13  ls
+   14  cd 04
+   15  cd 01
+   16  ;s
+   17  ls
+   18  cd ../04
+   19  ls
+   20  cd ..
+   21  ls
+   22  cd ..
+   23  ls
+   24  cd ..
+   25  ls
+   26  cd nfs/undergrad/04/b04902023/
+   27  history
+
